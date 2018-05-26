@@ -8,16 +8,23 @@
         Title="Normal Keyboard Switcher" Height="221.617" Width="309.839">
     <Grid>
         <TabControl Margin="10,10,9.667,10">
-            <TabItem Header="Switch Keystoke">
+            <TabItem Header="Config">
                 <Border Padding="10">
                     <StackPanel>
-                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Not Assigned" IsChecked="False" IsEnabled="False"/>
-                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Ctrl + Shift" IsChecked="True"/>
-                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Left Alt + Shift" IsChecked="False" IsEnabled="False"/>
+                        <GroupBox Header="Key combination">
+                            <StackPanel>
+                                <RadioButton GroupName="SwitchKeystrokeGroup" Content="Not Assigned" IsChecked="False" IsEnabled="False"/>
+                                <RadioButton GroupName="SwitchKeystrokeGroup" Content="Ctrl + Shift" IsChecked="True"/>
+                                <RadioButton GroupName="SwitchKeystrokeGroup" Content="Left Alt + Shift" IsChecked="False" IsEnabled="False"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="System settings">
+                            <CheckBox Name="AutorunCheckBox" Checked="AutorunCheckBox_CheckedChanged" Unchecked="AutorunCheckBox_CheckedChanged" Content="Autorun"/>
+                        </GroupBox>
                     </StackPanel>
                 </Border>
             </TabItem>
-            <TabItem Header="Used languages">
+            <TabItem Header="Languages">
                 <Border Padding="10">
                     <Grid>
                         <Grid.ColumnDefinitions>

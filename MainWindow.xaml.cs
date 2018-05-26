@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using Microsoft.Win32;
+using System.Reflection;
 
 namespace NormalKeyboardSwitcher
 {
@@ -53,7 +55,7 @@ namespace NormalKeyboardSwitcher
             TemporaryInputLanguageBinding.Source = inputController;
             LanguagesListBox.SetBinding(ListBox.SelectedIndexProperty, TemporaryInputLanguageBinding);
 
-
+            
             
             
         }
@@ -67,6 +69,24 @@ namespace NormalKeyboardSwitcher
             {
                 inputController.SwitchToLanguage(LanguagesListBox.SelectedIndex);
             }
+        }
+
+        private void AutorunCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
+        {
+            if (AutorunCheckBox.IsChecked != null)
+            {
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                Assembly curAssembly = Assembly.GetExecutingAssembly();
+                if ((bool)AutorunCheckBox.IsChecked)
+                {
+                    key.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+                }
+                else
+                {
+                    key.DeleteValue(curAssembly.GetName().Name, false);
+                }
+            }
+
         }
     }
 }
