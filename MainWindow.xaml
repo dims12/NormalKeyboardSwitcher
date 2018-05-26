@@ -1,0 +1,42 @@
+﻿<Window x:Class="NormalKeyboardSwitcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NormalKeyboardSwitcher"
+        mc:Ignorable="d"
+        Title="Normal Keyboard Switcher" Height="221.617" Width="309.839">
+    <Grid>
+        <TabControl Margin="10,10,9.667,10">
+            <TabItem Header="Switch Keystoke">
+                <Border Padding="10">
+                    <StackPanel>
+                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Not Assigned" IsChecked="False" IsEnabled="False"/>
+                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Ctrl + Shift" IsChecked="True"/>
+                        <RadioButton GroupName="SwitchKeystrokeGroup" Content="Left Alt + Shift" IsChecked="False" IsEnabled="False"/>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+            <TabItem Header="Used languages">
+                <Border Padding="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <ListBox Name="LanguagesListBox"/>
+                        
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button Content="Switch" Click="SwitchButton_Click"/>
+                        </StackPanel>
+
+
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
