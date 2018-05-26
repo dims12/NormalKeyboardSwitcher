@@ -3,10 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:local="clr-namespace:NormalKeyboardSwitcher"
         mc:Ignorable="d"
-        Title="Normal Keyboard Switcher" Height="221.617" Width="309.839">
+        Title="Normal Keyboard Switcher" 
+        Icon="Globe.ico"
+        ShowInTaskbar="False"
+        Height="221.617" Width="340.172">
     <Grid>
+        <tb:TaskbarIcon IconSource="Globe.ico">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="OpenMenuItem" Click="OpenMenuItem_Click" Header="Open..." />
+                    <MenuItem Name="ExitMenuItem" Click="ExitMenuItem_Click" Header="Exit" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
         <TabControl Margin="10,10,9.667,10">
             <TabItem Header="Config">
                 <Border Padding="10">

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.Reflection;
+using System.ComponentModel;
 
 namespace NormalKeyboardSwitcher
 {
@@ -60,6 +61,15 @@ namespace NormalKeyboardSwitcher
             
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?\nNormal Keyboard Switcher won't switch keyboards anymore.\nIf you want to hide it's window then select 'No' here and minimize it's window", 
+                "Exit Confirmation", System.Windows.MessageBoxButton.YesNo);
+            if (messageBoxResult != MessageBoxResult.Yes) {
+                e.Cancel = true;
+            }
+            base.OnClosing(e);
+        }
 
 
 
@@ -87,6 +97,16 @@ namespace NormalKeyboardSwitcher
                 }
             }
 
+        }
+
+        private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Normal;
+        }
+
+        private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
