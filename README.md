@@ -19,9 +19,13 @@ Normal keyboard switcher is a simple alternative to [Mahou](https://github.com/B
 ## To Do
 
 1. Add key combinations other than Ctrl-Shift
-4. Make installer
 
 ## How to run
+
+Download Setup.msi and run it. Follow installation instructions. After installation finished, run program
+from start menu and select `Autorun` check box in it. Minimize to tray or exit.
+
+Please disable Windows keyboard switch combinations.
 
 
 
