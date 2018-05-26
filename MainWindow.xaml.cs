@@ -28,6 +28,9 @@ namespace NormalKeyboardSwitcher
         private KeyboardListener keyboardListener;
         private ForegroundWindowListener foregroundWindowListener;
         private InputController inputController;
+        private RegistryKey autorunKey = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+        private Assembly curAssembly = Assembly.GetExecutingAssembly();
+
 
         public MainWindow()
         {
@@ -56,9 +59,40 @@ namespace NormalKeyboardSwitcher
             TemporaryInputLanguageBinding.Source = inputController;
             LanguagesListBox.SetBinding(ListBox.SelectedIndexProperty, TemporaryInputLanguageBinding);
 
-            
-            
-            
+
+            // settin initial value of autorun checkbox
+            AutorunCheckBox.IsChecked = Autorun;
+
+
+        }
+
+        bool Autorun
+        {
+            get
+            {
+                object oldAutorunValue = autorunKey.GetValue(curAssembly.GetName().Name);
+                return oldAutorunValue != null && oldAutorunValue.Equals(curAssembly.Location);
+            }
+
+            set
+            {
+                if (value && !Autorun)
+                {
+                    autorunKey.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+                }
+                else if( !value && Autorun )
+                {
+                    autorunKey.DeleteValue(curAssembly.GetName().Name, false);
+                }
+            }
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == System.Windows.WindowState.Minimized)
+                Hide();
+
+            base.OnStateChanged(e);
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -85,22 +119,14 @@ namespace NormalKeyboardSwitcher
         {
             if (AutorunCheckBox.IsChecked != null)
             {
-                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                Assembly curAssembly = Assembly.GetExecutingAssembly();
-                if ((bool)AutorunCheckBox.IsChecked)
-                {
-                    key.SetValue(curAssembly.GetName().Name, curAssembly.Location);
-                }
-                else
-                {
-                    key.DeleteValue(curAssembly.GetName().Name, false);
-                }
+                Autorun = (bool)AutorunCheckBox.IsChecked;
             }
 
         }
 
         private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            Show();
             WindowState = WindowState.Normal;
         }
 

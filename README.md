@@ -19,12 +19,11 @@ Normal keyboard switcher is a simple alternative to [Mahou](https://github.com/B
 ## To Do
 
 1. Add key combinations other than Ctrl-Shift
-5. Make icon
-2. Turn into system tray application 
-3. Make autorun
 4. Make installer
 
 ## How to run
+
+
 
 
 
