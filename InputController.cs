@@ -50,15 +50,21 @@ namespace NormalKeyboardSwitcher
         {
             get
             {
-                return temporaryInputLanguage;
+                if (temporaryInputLanguage >= 0 && temporaryInputLanguage < UsedInputLanguages.Count)
+                {
+                    return temporaryInputLanguage;
+                }
+                else {
+                    return 0;
+                }
+            
             }
             set
             {
-                temporaryInputLanguage = value;
+                temporaryInputLanguage = value % UsedInputLanguages.Count;
                 NotifyPropertyChanged("TemporaryInputLanguage");
                 NotifyPropertyChanged("UsedInputLanguage");
                 FireInputLanguageChanged();
-                Console.WriteLine("Temporary input language set to " + value);
             }
         }
 
@@ -73,10 +79,6 @@ namespace NormalKeyboardSwitcher
         public int NextTemporaryInputLanguage()
         {
             TemporaryInputLanguage++;
-            if( TemporaryInputLanguage >= UsedInputLanguages.Count)
-            {
-                TemporaryInputLanguage = 0;
-            }
             return TemporaryInputLanguage;
         }
 
