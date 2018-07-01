@@ -71,6 +71,7 @@ namespace NormalKeyboardSwitcher
         public void InputLangChangeRequest(IntPtr hwnd, UsedInputLanguage language)
         {
             IntPtr handle = language.InputLanguage.Handle;
+            hwnd = GetRootOwner();
 
             if (hwnd != null)
             {
@@ -82,6 +83,7 @@ namespace NormalKeyboardSwitcher
 
         public void InputLangChangeRequest(UsedInputLanguage language)
         {
+            hwnd = GetRootOwner();
             InputLangChangeRequest(hwnd, language);
         }
 
@@ -130,6 +132,12 @@ namespace NormalKeyboardSwitcher
 
         */
 
+        private IntPtr GetRootOwner() {
+            IntPtr hwnd = GetForegroundWindow();
+            hwnd = GetAncestor(hwnd, GA_ROOTOWNER);
+            return hwnd;
+        }
+
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern IntPtr SetWinEventHook(int eventMin, int eventMax, IntPtr hmodWinEventProc, WinEventHookDelegate lpfnWinEventProc, int idProcess, int idThread, int dwflags);
@@ -140,6 +148,12 @@ namespace NormalKeyboardSwitcher
         [DllImport("User32.dll", EntryPoint = "PostMessage")]
         private static extern int PostMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetAncestor(IntPtr hWnd, int gaFlags);
+
         private const int WM_INPUTLANGCHANGEREQUEST = 0x0050;
         private const int EVENT_SYSTEM_FOREGROUND = 3;
 
@@ -147,5 +161,6 @@ namespace NormalKeyboardSwitcher
         private const int WINEVENT_OUTOFCONTEXT = 0;
         private const int WINEVENT_SKIPOWNPROCESS = 2;
         private const int WINEVENT_SKIPOWNTHREAD = 1;
+        private const int GA_ROOTOWNER = 3;
     }
 }
