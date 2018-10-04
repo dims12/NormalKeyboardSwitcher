@@ -13,6 +13,8 @@ namespace NormalKeyboardSwitcher
 
     delegate void ForegroundWindowChangedDelegate(IntPtr hwnd);
 
+    delegate bool PostInputLanguageRequestDelegate(IntPtr hwnd, IntPtr handle);
+
     class ForegroundWindowListener
     {
 
@@ -67,24 +69,44 @@ namespace NormalKeyboardSwitcher
             UnhookWinEvent(windowEventHook);
         }
 
+        static bool PostInputLanguageRequest(IntPtr hwnd, IntPtr handle) {
+            PostMessage(hwnd, WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, handle);
+            return true;
+        }
 
         public void InputLangChangeRequest(IntPtr hwnd, UsedInputLanguage language)
         {
             IntPtr handle = language.InputLanguage.Handle;
-            hwnd = GetRootOwner();
+            //hwnd = GetRootOwner();
 
             if (hwnd != null)
             {
-                PostMessage(hwnd, WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, handle);
+                PostInputLanguageRequest(hwnd, handle);
+
+                StringBuilder buf = new StringBuilder(100);
+                GetClassName(hwnd, buf, 100);
+
+                //if this is a dialog class then post message to all descendants 
+                if (buf.ToString() == "#32770")
+                    EnumChildWindows(hwnd, PostInputLanguageRequest, handle);
             }
 
 
         }
 
+        public void InputLangChangeRequestForChildsIfRequired(IntPtr hwnd, UsedInputLanguage language) {
+
+            IntPtr handle = language.InputLanguage.Handle;
+
+        }
+
+
         public void InputLangChangeRequest(UsedInputLanguage language)
         {
             hwnd = GetRootOwner();
             InputLangChangeRequest(hwnd, language);
+
+            
         }
 
 
@@ -153,6 +175,15 @@ namespace NormalKeyboardSwitcher
 
         [DllImport("user32.dll")]
         static extern IntPtr GetAncestor(IntPtr hWnd, int gaFlags);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetDesktopWindow();
+
+        [DllImport("user32.dll")]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder className, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        static extern bool EnumChildWindows(IntPtr hWnd, PostInputLanguageRequestDelegate handler, IntPtr lParam);
 
         private const int WM_INPUTLANGCHANGEREQUEST = 0x0050;
         private const int EVENT_SYSTEM_FOREGROUND = 3;
