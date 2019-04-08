@@ -21,7 +21,7 @@ namespace NormalKeyboardSwitcher
         private IntPtr hwnd;
         private WinEventHookDelegate WindowEventHookInstance;
         private IntPtr windowEventHook;
-
+        
 
         public ForegroundWindowListener()
         {
@@ -76,19 +76,20 @@ namespace NormalKeyboardSwitcher
 
         public void InputLangChangeRequest(IntPtr hwnd, UsedInputLanguage language)
         {
-            IntPtr handle = language.InputLanguage.Handle;
+            IntPtr targetHandle = language.InputLanguage.Handle;
+            IntPtr currentHandle = GetUserInputLanguageHandle(hwnd);
             //hwnd = GetRootOwner();
 
-            if (hwnd != null)
+            if (hwnd != null && targetHandle != currentHandle)
             {
-                PostInputLanguageRequest(hwnd, handle);
+                PostInputLanguageRequest(hwnd, targetHandle);
 
-                StringBuilder buf = new StringBuilder(100);
-                GetClassName(hwnd, buf, 100);
+                //StringBuilder buf = new StringBuilder(100);
+                //GetClassName(hwnd, buf, 100);
 
-                //if this is a dialog class then post message to all descendants 
-                if (buf.ToString() == "#32770")
-                    EnumChildWindows(hwnd, PostInputLanguageRequest, handle);
+                ////if this is a dialog class then post message to all descendants 
+                //if (buf.ToString() == "#32770")
+                //    EnumChildWindows(hwnd, PostInputLanguageRequest, targetHandle);
             }
 
 
@@ -105,8 +106,6 @@ namespace NormalKeyboardSwitcher
         {
             hwnd = GetRootOwner();
             InputLangChangeRequest(hwnd, language);
-
-            
         }
 
 
@@ -118,46 +117,24 @@ namespace NormalKeyboardSwitcher
             ForegroundWindowChanged?.Invoke(hwnd);
         }
 
-        /*
-        public static Process GetCurrentForegroundProcess()
-        {
-            IntPtr hwnd = GetForegroundWindow();
-            uint pid = GetWindowThreadProcessId(hwnd, IntPtr.Zero);
-            Process p = Process.GetProcessById((int)pid);
-            return p;
-        }
-
-        public static UsedInputLanguage GetCurrentForegroundInputLanguage()
-        {
-            Process process = GetCurrentForegroundProcess();
-            return GetInputLanguage(process);
-        }
-        /// <summary>
-        /// Returns InputLanguage of a given process or `null`
-        /// </summary>
-        /// <param name="thread"></param>
-        /// <returns></returns>
-        public static UsedInputLanguage GetInputLanguage(Process process)
-        {
-            uint hkl = GetKeyboardLayout((uint)process.Id);
-            foreach(UsedInputLanguage il in UsedInputLanguages)
-            {
-                if( hkl == (uint)il.InputLanguage.Handle )
-                {
-                    return il;
-                }
-            }
-            return null;
-
-        }
-
-
-        */
-
         private IntPtr GetRootOwner() {
             IntPtr hwnd = GetForegroundWindow();
             hwnd = GetAncestor(hwnd, GA_ROOTOWNER);
             return hwnd;
+        }
+
+        //private UsedInputLanguage GetUserInputLanguage(IntPtr hwnd) {
+        //    int idThreas = GetWindowThreadProcessId(hwnd, 0);
+        //    IntPtr res = GetKeyboardLayout(idThreas);
+        //    return inputController.GetInputLanguage(res);
+        //}
+
+        private IntPtr GetUserInputLanguageHandle(IntPtr hwnd)
+        {
+            int idThreas = GetWindowThreadProcessId(hwnd, 0);
+            IntPtr handle = GetKeyboardLayout(idThreas);
+            //return inputController.GetInputLanguage(res);
+            return handle;
         }
 
 
@@ -172,6 +149,12 @@ namespace NormalKeyboardSwitcher
 
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        static extern int GetWindowThreadProcessId(IntPtr hWnd, int gaFlags);
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetKeyboardLayout(int idThread);
 
         [DllImport("user32.dll")]
         static extern IntPtr GetAncestor(IntPtr hWnd, int gaFlags);

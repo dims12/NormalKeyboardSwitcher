@@ -76,6 +76,15 @@ namespace NormalKeyboardSwitcher
             }
         }
 
+        public UsedInputLanguage GetInputLanguage(IntPtr kbd) {
+            foreach(UsedInputLanguage inputLanguage in UsedInputLanguages) {
+                if( inputLanguage.InputLanguage.Handle == kbd) {
+                    return inputLanguage;
+                }
+            }
+            return null;
+        }
+
         public int NextTemporaryInputLanguage()
         {
             TemporaryInputLanguage++;
