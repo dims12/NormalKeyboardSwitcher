@@ -46,10 +46,14 @@ namespace NormalKeyboardSwitcher
             keyboardListener.DropTemporaryInputLanguage += inputController.DropTemporaryInputLanguage;
 
             // if input language is changed in input controller, then send it to foreground window
-            inputController.InputLanguageChanged += foregroundWindowListener.InputLangChangeRequest;
+            inputController.InputLanguageChanged += foregroundWindowListener.InputLangChangeRequestFocused;
 
             // if foreground window changed, then send to it a request to change to current language from the controller
-            foregroundWindowListener.ForegroundWindowChanged += (hwnd) => { foregroundWindowListener.InputLangChangeRequest(hwnd, inputController.UsedInputLanguage); };
+            foregroundWindowListener.ForegroundWindowChanged += (hwnd) => {
+                //foregroundWindowListener.InputLangChangeRequest(hwnd, inputController.UsedInputLanguage); 
+                // will notify only focused
+                foregroundWindowListener.InputLangChangeRequestFocused(inputController.UsedInputLanguage);
+            };
 
             // binds list of system languages to a list box in GUI
             LanguagesListBox.ItemsSource = inputController.UsedInputLanguages;

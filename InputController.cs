@@ -33,7 +33,15 @@ namespace NormalKeyboardSwitcher
             usedInputLanguages.Clear();
             foreach (InputLanguage il in InputLanguage.InstalledInputLanguages)
             {
-                usedInputLanguages.Add(new UsedInputLanguage(il));
+                if ((int)il.Handle == 0x04190419 && usedInputLanguages.Count()>=2)
+                {
+                    usedInputLanguages.Insert(1, new UsedInputLanguage(il));
+                }
+                else
+                {
+                    usedInputLanguages.Add(new UsedInputLanguage(il));
+                }
+                
             }
             TemporaryInputLanguage = 0;
         }
